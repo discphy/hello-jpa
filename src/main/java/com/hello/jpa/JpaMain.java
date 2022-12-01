@@ -16,19 +16,10 @@ public class JpaMain {
         tx.begin();
 
         try {
-            Movie movie = new Movie();
-            movie.setDirector("aaaa");
-            movie.setActor("bbb");
-            movie.setName("바람과함께사라지다");
-            movie.setPrice(10000);
+            Member member = em.find(Member.class, 1L);
 
-            em.persist(movie);
-
-            em.flush();
-            em.clear();
-
-            Item item = em.find(Item.class, movie.getId());
-            System.out.println("findMovie = " + item);
+            printMember(member);
+            //printMemberAndTeam(member);
 
             tx.commit();
         } catch (Exception e) {
@@ -38,5 +29,18 @@ public class JpaMain {
         }
 
         emf.close();
+    }
+
+    private static void printMember(Member member) {
+        String username = member.getUsername();
+        System.out.println("username = " + username);
+    }
+
+    private static void printMemberAndTeam(Member member) {
+        String username = member.getUsername();
+        System.out.println("username = " + username);
+
+        Team team = member.getTeam();
+        System.out.println("team.getName() = " + team.getName());
     }
 }
