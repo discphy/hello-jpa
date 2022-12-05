@@ -3,6 +3,7 @@ package com.hello.jpa;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
+import java.util.List;
 
 public class JpaMain {
 
@@ -15,25 +16,30 @@ public class JpaMain {
         tx.begin();
 
         try {
+            Team teamA = new Team();
+            teamA.setName("teamA");
+            em.persist(teamA);
+
+            Team teamB = new Team();
+            teamB.setName("teamB");
+            em.persist(teamB);
+
             Member member1 = new Member();
             member1.setUsername("hello");
+            member1.setTeam(teamA);
+            em.persist(member1);
 
             Member member2 = new Member();
-            member2.setUsername("hello1");
-
-            em.persist(member1);
+            member2.setUsername("hello2");
+            member2.setTeam(teamB);
             em.persist(member2);
 
             em.flush();
             em.clear();
 
-            //Member findMember = em.find(Member.class, member.getId());
+            //Member m = em.find(Member.class, member1.getId());
 
-            Member m1 = em.getReference(Member.class, member1.getId());
-
-            Hibernate.initialize(m1);
-
-            System.out.println("isLoaded : " + emf.getPersistenceUnitUtil().isLoaded(m1));
+            List<Member> members = em.createQuery("select m from Member m join fetch m.team", Member.class).getResultList();
 
             tx.commit();
         } catch (Exception e) {
